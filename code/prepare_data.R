@@ -1,11 +1,5 @@
 # Read and summarise data for finding PLODs
 
-# Get population data
-ppln <- pop(dataset.gi)
-
-# Find number of populations
-n_pops <- nlevels(ppln)
-
 # Find numbers of ales per locus in genind genotypes
 ns_ales <- nAll(dataset.gi)
 
@@ -26,16 +20,6 @@ n_pairs <- choose(n_samps, 2)
 
 # Find allele frequencies over all samples
 ale_freqs <- colMeans(tab(dataset.gi), na.rm = T) / 2
-
-# # Create matrix to hold allele frequencies for each population
-# ale_frqs_pop <- matrix(nrow = n_pops, ncol = n_loci)
-# 
-# # Loop over populations
-# for (ppln_ind in 1:n_pops) {
-#   # Find allele frequencies by population
-#   ale_frqs_pop[ppln_ind, ] <-
-#     colMeans(tab(dataset.gi)[ppln == levels(ppln)[ppln_ind], ], na.rm = T) / 2
-# }
 
 # Find numbers of loci with each number of alleles. Table converts things to
 # factors first and works on levels, so won't have zero counts
@@ -85,19 +69,23 @@ for (i in seq_along(ns_ales_any)) {
   loci_sz_inds_rep <- rep(1:n_loci_sz, each = n_gts)
   
   # Find allele frequencies, remember more than two alleles now
-  ale_frqs_sz <- matrix(ale_freqs[loci_sz_inds], nrow = n_loci_sz, 
-                        ncol = n_ales, byrow = T)
+  ale_frqs_sz <- matrix(
+    ale_freqs[loci_sz_inds], nrow = n_loci_sz, ncol = n_ales, byrow = T
+  )
   
   # Find possible genotype probabilities
   gt_prbs_mat <- matrix(
     ale_frqs_sz[cbind(loci_sz_inds_rep, ales_1)] *
       ale_frqs_sz[cbind(loci_sz_inds_rep, ales_2)] *
-      (1 + (ales_1 != ales_2)), nrow = n_gts, ncol = n_loci_sz)
+      (1 + (ales_1 != ales_2)), 
+    nrow = n_gts, ncol = n_loci_sz
+  )
   
   # Create array for half-sibling versus unrelated pair plods and add possible
   # second genotype probabilities
-  gt_2_prbs_mat <- array(rep(gt_prbs_mat, each = n_gts), 
-                         dim = c(n_gts, n_gts, n_loci_sz))
+  gt_2_prbs_mat <- array(
+    rep(gt_prbs_mat, each = n_gts), dim = c(n_gts, n_gts, n_loci_sz)
+  )
   hsp_up_plods_ary <- gt_2_prbs_mat
   
   # Find possible genopairs

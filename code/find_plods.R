@@ -80,8 +80,6 @@ hsp_up_plods <- hsp_up_plods / ns_shrd_mrkrs - log(2)
 plods_df <- data.frame(
   samp_name_1 = samp_name[samp_inds_1], 
   samp_name_2 = samp_name[samp_inds_2],
-  ppln_1 = ppln[samp_inds_1], 
-  ppln_2 = ppln[samp_inds_2],
   PLOD = hsp_up_plods,
   ns_shrd_mrkrs = ns_shrd_mrkrs
 )
